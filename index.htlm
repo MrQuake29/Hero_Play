@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Héroes Interactivos: Spider-Man y Más</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        header {
+            text-align: center;
+            background-color: #ff0000;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #ff0000;
+        }
+        button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #cc0000;
+        }
+        #quiz-form {
+            display: none;
+        }
+        #quiz-result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        #game-area {
+            display: none;
+            text-align: center;
+        }
+        #word-to-guess {
+            font-size: 24px;
+            letter-spacing: 5px;
+            margin: 20px 0;
+        }
+        .letter-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .letter-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #game-result {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bienvenido a Héroes Interactivos</h1>
+        <p>Explora juegos, quizzes y más sobre superhéroes como Spider-Man. ¡Interactúa y diviértete!</p>
+    </header>
+
+    <section id="quiz-section">
+        <h2>Quiz sobre Spider-Man</h2>
+        <p>Prueba tus conocimientos sobre Spider-Man con este quiz interactivo. ¡Responde las preguntas y ve tu puntuación!</p>
+        <button onclick="startQuiz()">Iniciar Quiz</button>
+        <form id="quiz-form">
+            <div>
+                <p>1. ¿Cuál es el nombre real de Spider-Man?</p>
+                <label><input type="radio" name="q1" value="Peter Parker"> Peter Parker</label><br>
+                <label><input type="radio" name="q1" value="Tony Stark"> Tony Stark</label><br>
+                <label><input type="radio" name="q1" value="Bruce Wayne"> Bruce Wayne</label>
+            </div>
+            <div>
+                <p>2. ¿Quién es el principal enemigo de Spider-Man?</p>
+                <label><input type="radio" name="q2" value="Green Goblin"> Green Goblin</label><br>
+                <label><input type="radio" name="q2" value="Joker"> Joker</label><br>
+                <label><input type="radio" name="q2" value="Thanos"> Thanos</label>
+            </div>
+            <div>
+                <p>3. ¿En qué universo pertenece Spider-Man?</p>
+                <label><input type="radio" name="q3" value="Marvel"> Marvel</label><br>
+                <label><input type="radio" name="q3" value="DC"> DC</label><br>
+                <label><input type="radio" name="q3" value="Star Wars"> Star Wars</label>
+            </div>
+            <button type="button" onclick="submitQuiz()">Enviar Respuestas</button>
+        </form>
+        <div id="quiz-result"></div>
+    </section>
+
+    <section id="game-section">
+        <h2>Juego: Ahorcado de Héroes</h2>
+        <p>Adivina el nombre de un superhéroe relacionado con Spider-Man. ¡Tienes 6 intentos!</p>
+        <button onclick="startGame()">Iniciar Juego</button>
+        <div id="game-area">
+            <div id="word-to-guess"></div>
+            <div id="letters"></div>
+            <p>Intentos restantes: <span id="attempts">6</span></p>
+            <div id="game-result"></div>
+        </div>
+    </section>
+
+    <section id="more-interactions">
+        <h2>Más Interacciones</h2>
+        <p>Puedes agregar más secciones como un matching game o trivia adicional. ¡Copia y modifica este código para expandirlo!</p>
+    </section>
+
+    <script>
+        // Quiz Functionality
+        function startQuiz() {
+            document.getElementById('quiz-form').style.display = 'block';
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            const answers = {
+                q1: 'Peter Parker',
+                q2: 'Green Goblin',
+                q3: 'Marvel'
+            };
+
+            for (let i = 1; i <= 3; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                if (selected && selected.value === answers[`q${i}`]) {
+                    score++;
+                }
+            }
+
+            document.getElementById('quiz-result').innerText = `Tu puntuación: ${score}/3`;
+        }
+
+        // Hangman Game Functionality
+        const words = ['SPIDERMAN', 'VENOM', 'MARYJANE', 'DOCTOROCTOPUS', 'GREENGOBLIN'];
+        let currentWord;
+        let guessedLetters = [];
+        let attempts = 6;
+
+        function startGame() {
+            document.getElementById('game-area').style.display = 'block';
+            currentWord = words[Math.floor(Math.random() * words.length)];
+            guessedLetters = [];
+            attempts = 6;
+            displayWord();
+            displayLetters();
+            document.getElementById('attempts').innerText = attempts;
+            document.getElementById('game-result').innerText = '';
+        }
+
+        function displayWord() {
+            let display = '';
+            for (let char of currentWord) {
+                if (guessedLetters.includes(char)) {
+                    display += char + ' ';
+                } else {
+                    display += '_ ';
+                }
+            }
+            document.getElementById('word-to-guess').innerText = display.trim();
+        }
+
+        function displayLetters() {
+            const lettersDiv = document.getElementById('letters');
+            lettersDiv.innerHTML = '';
+            for (let i = 65; i <= 90; i++) { // A-Z
+                const char = String.fromCharCode(i);
+                const btn = document.createElement('button');
+                btn.classList.add('letter-btn');
+                btn.innerText = char;
+                btn.onclick = () => guessLetter(char);
+                lettersDiv.appendChild(btn);
+            }
+        }
+
+        function guessLetter(char) {
+            if (guessedLetters.includes(char) || attempts <= 0) return;
+
+            guessedLetters.push(char);
+            if (!currentWord.includes(char)) {
+                attempts--;
+                document.getElementById('attempts').innerText = attempts;
+            }
+
+            displayWord();
+            updateButtons();
+
+            if (attempts <= 0) {
+                document.getElementById('game-result').innerText = `Perdiste! La palabra era: ${currentWord}`;
+            } else if (!document.getElementById('word-to-guess').innerText.includes('_')) {
+                document.getElementById('game-result').innerText = '¡Ganaste!';
+            }
+        }
+
+        function updateButtons() {
+            const buttons = document.querySelectorAll('.letter-btn');
+            buttons.forEach(btn => {
+                if (guessedLetters.includes(btn.innerText)) {
+                    btn.disabled = true;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
